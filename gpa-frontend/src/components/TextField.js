@@ -9,7 +9,7 @@ const TextField = ({ value, onChange, placeholder }) => {
       placeholder={placeholder}
       style={{
         borderRadius: '5px',
-        fontSize: '12pt',
+        fontSize: '12pt', 
         padding: '10px',
         border: '1px solid #d2d2d2',
         backgroundColor: '#f2f2f2',

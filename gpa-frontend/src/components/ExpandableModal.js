@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 
-const Modal = ({ onClose, onConfirm, children }) => {
+const Modal = ({ onClose, children }) => {
   return (
     <div
       style={{
@@ -30,14 +30,13 @@ const Modal = ({ onClose, onConfirm, children }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <div style={{fontSize: '12pt', position: 'absolute', top: '16px', left: '16px', cursor: 'pointer', color: '#ff5136'}} onClick={onClose}>Close</div>
-        <div style={{fontSize: '12pt', position: 'absolute', top: '16px', right: '16px', cursor: 'pointer', color: '#57ff6f'}} onClick={onConfirm}>Confirm</div>
         {children}
       </div>
     </div>
   );
 };
 
-const ExpandableModal = ({ confirmFunction, trigger, children }) => {
+const ExpandableModal = ({trigger, children }) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleOpenModal = () => {
@@ -48,15 +47,10 @@ const ExpandableModal = ({ confirmFunction, trigger, children }) => {
     setShowModal(false);
   };
 
-  const handleConfirm = () => {
-    confirmFunction();
-    setShowModal(false);
-  };
-
   return (
     <>
       <div onClick={handleOpenModal}>{trigger}</div>
-      {showModal && <Modal onClose={handleCloseModal} onConfirm={handleConfirm}>{children}</Modal>}
+      {showModal && <Modal onClose={handleCloseModal}>{children}</Modal>}
     </>
   );
 };

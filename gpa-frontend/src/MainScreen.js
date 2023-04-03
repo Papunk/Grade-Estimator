@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import AddCourse from './screens/AddCourse';
 import CircularButton from './components/CircularButton';
-import HStack from './components/HStack';
 import ExpandableModal from './components/ExpandableModal';
-import AddCourse from './AddCourse';
-import plusSign from  './icons/plus-white@2x.png'
+import HStack from './components/HStack';
+
+import Course from './classes/Course';
+
+import plusSign from './icons/plus-white@2x.png';
 
 
 
@@ -16,8 +19,9 @@ import plusSign from  './icons/plus-white@2x.png'
 function GradeTracker() {
   const [courses, setCourses] = useState([]);
 
-  function handleAddCourse(courseName) {
-    setCourses([...courses, courseName]);
+  function handleAddCourse(newCourse) {
+    setCourses([...courses, newCourse]);
+    console.log(courses)
   }
 
   return (
@@ -26,16 +30,14 @@ function GradeTracker() {
       <div>
         <HStack>
           <h2>Classes</h2>
-          <ExpandableModal
-            trigger={<CircularButton src={plusSign} color="#4ea0d9" size="40px" onClick={handleAddCourse} />}
-          >
-            <AddCourse onClick={console.log("Fongui")} addCourse={handleAddCourse}></AddCourse>
+          <ExpandableModal trigger={<CircularButton src={plusSign} color="#4ea0d9" size="40px"/>}>
+            <AddCourse returnCourse={handleAddCourse}></AddCourse>
           </ExpandableModal>
         </HStack>
         {courses.map((course, index) => (
           <div key={index}>
             <HStack>
-              <label htmlFor={`class-${index}`}>{courses.name}</label>
+              <label htmlFor={`class-${index}`}>• {courses[index].name} ({courses[index].code})</label>
             </HStack>
           </div>
         ))}

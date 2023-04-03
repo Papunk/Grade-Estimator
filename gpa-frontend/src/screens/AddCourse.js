@@ -1,13 +1,17 @@
 import { useState } from 'react';
-import HStack from './components/HStack';
-import TextField from './components/TextField';
-import PillButton from './components/PillButton';
-import CircularButton from './components/CircularButton';
+import HStack from '../components/HStack';
+import TextField from '../components/TextField';
+import PillButton from '../components/PillButton';
+import CircularButton from '../components/CircularButton';
 
-import trashSign from './icons/trash-white@2x.png'
+import Course from '../classes/Course';
+import Assessment from '../classes/Assessment';
 
-const AddCourse = ({ getCourse }) => {
+import trashSign from '../icons/trash-white@2x.png'
+
+const AddCourse = ({ returnCourse }) => {
   const [courseName, setCourseName] = useState('');
+  const [courseCode, setCourseCode] = useState('');
   const [assignments, setAssignments] = useState([]);
 
   const addAssignment = () => {
@@ -26,15 +30,28 @@ const AddCourse = ({ getCourse }) => {
     setAssignments(newAssignments);
   };
 
+  const handleCourse = () => {
+    const course = new Course(courseName, courseCode);
+    assignments.forEach(function(element, index) {
+      course.addAssessment(new Assessment(element, 0.01));
+    });
+    console.log(course);
+    returnCourse(course);
+  }
 
 
   return (
     <div>
         <h2>{courseName.length === 0 ? "New Course" : courseName}</h2>
+        <h6>{courseCode.length === 0 ? "No code" : courseCode}</h6>
         <hr />
-        <TextField value={courseName} onChange={(e) => setCourseName(e.target.value)} placeholder="Course Name"></TextField>
+        <TextField value={courseName} onChange={(e) => setCourseName(e.target.value)} placeholder="Name"></TextField>
+        <TextField value={courseCode} onChange={(e) => setCourseCode(e.target.value)} placeholder="Code"></TextField>
         <div>
-            <h4>Assignments</h4>
+            <HStack>
+              <h4>Assignments</h4>
+              <PillButton text="Add assignment" backgroundColor="#4ea0d9" textColor="white" onClick={(e) => addAssignment()}/>
+            </HStack>
             <hr />
             {assignments.map((assignment, index) => (
               <div key={index} style={{margin: '10pt'}}>
@@ -44,7 +61,7 @@ const AddCourse = ({ getCourse }) => {
                 </HStack>
               </div>
             ))}
-            <PillButton text="Add assignment" backgroundColor="#4ea0d9" textColor="white" onClick={(e) => addAssignment()}/>
+            <PillButton text="Done" backgroundColor="#378f54" textColor="white" onClick={handleCourse}/>
         </div>
     </div>
   );
