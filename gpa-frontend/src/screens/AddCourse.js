@@ -45,7 +45,10 @@ const AddCourse = ({ returnCourse }) => {
         <h2>{courseName.length === 0 ? "New Course" : courseName}</h2>
         <h6>{courseCode.length === 0 ? "No code" : courseCode}</h6>
         <hr />
-        <TextField value={courseName} onChange={(e) => setCourseName(e.target.value)} placeholder="Name"></TextField>
+        <div style={{margin: '10pt'}}>
+          <TextField value={courseName} onChange={(e) => setCourseName(e.target.value)} placeholder="Name"></TextField>
+        </div>
+        {/* TODO: make this text field numeric only */}
         <TextField value={courseCode} onChange={(e) => setCourseCode(e.target.value)} placeholder="Code"></TextField>
         <div>
             <HStack>
@@ -57,6 +60,7 @@ const AddCourse = ({ returnCourse }) => {
               <div key={index} style={{margin: '10pt'}}>
                 <HStack>
                     <TextField value={assignment.name} onChange={(e) => updateAssignment(index, 'name', e.target.value)} placeholder="Assignment"></TextField>
+                    <TextField value={assignment.weight} onChange={(e) => updateAssignment(index, 'weight', e.target.value)} placeholder="Assignment"></TextField>
                     <CircularButton src={trashSign} color="#ff5136" size="40px" onClick={() => {}}/>
                 </HStack>
               </div>

@@ -13,9 +13,10 @@ class Course {
         this.totalWeight = 0;
     }
 
-    addAssessment(assessment) {
-        if (this.totalWeight + assessment.weight <= 1) {
-            this.assessments.push(assessment)
+    addAssessment(newAssessment) {
+        if (this.totalWeight + newAssessment.weight <= 1) {
+            this.assessments.push(newAssessment)
+            this.totalWeight += newAssessment.weight
             console.log(this.assessments)
         }
         else {
