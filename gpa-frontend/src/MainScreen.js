@@ -4,17 +4,11 @@ import CircularButton from './components/CircularButton';
 import ExpandableModal from './components/ExpandableModal';
 import HStack from './components/HStack';
 
+
 import Course from './classes/Course';
 
-import plusSign from './icons/plus-white@2x.png';
+import plusSign from './icons/plus-white.png';
 
-
-
-
-// TODO:
-// make the modal accept a function to be executed when closed
-//  that function can then modify the contents of the caller (like adding a class)
-// make each class row open up a modal with details
 
 function GradeTracker() {
   const [courses, setCourses] = useState([]);

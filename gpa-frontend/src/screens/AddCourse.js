@@ -7,7 +7,7 @@ import CircularButton from '../components/CircularButton';
 import Course from '../classes/Course';
 import Assessment from '../classes/Assessment';
 
-import trashSign from '../icons/trash-white@2x.png'
+import trashSign from '../icons/trash-white.png'
 
 const AddCourse = ({ returnCourse }) => {
   const [courseName, setCourseName] = useState('');
