@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const HStack = ({ children }) => {
+const VStack = ({ children }) => {
   return (
     <StackStyle>
       {children}
@@ -12,10 +12,9 @@ const HStack = ({ children }) => {
 
 const StackStyle = styled.div`
   display: flex;
-  gap: 10pt;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
 `;
 
-export default HStack;
+export default VStack;

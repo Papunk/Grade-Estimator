@@ -3,13 +3,14 @@ import HStack from '../components/HStack';
 import TextField from '../components/TextField';
 import PillButton from '../components/PillButton';
 import CircularButton from '../components/CircularButton';
-
+import styled from 'styled-components';
 import Course from '../classes/Course';
 import Assessment from '../classes/Assessment';
 
 import trashSign from '../icons/trash-white.png'
 
-const AddCourse = ({ returnCourse }) => {
+const EditCourse = ({ course, addCourse }) => {
+  const editing = course != null;
   const [courseName, setCourseName] = useState('');
   const [courseCode, setCourseCode] = useState('');
   const [assignments, setAssignments] = useState([]);
@@ -18,25 +19,9 @@ const AddCourse = ({ returnCourse }) => {
     setAssignments([...assignments, { name: '', weight: 0 }]);
   };
 
-  const removeAssignment = (index) => {
-    const newAssignments = [...assignments];
-    newAssignments.splice(index, 1);
-    setAssignments(newAssignments);
-  };
-
-  const updateAssignment = (index, field, value) => {
-    const newAssignments = [...assignments];
-    newAssignments[index][field] = value;
-    setAssignments(newAssignments);
-  };
-
-  const handleCourse = () => {
-    const course = new Course(courseName, courseCode);
-    assignments.forEach(function(element, index) {
-      course.addAssessment(new Assessment(element, 0.01));
-    });
-    console.log(course);
-    returnCourse(course);
+  function onConfirm() {
+    const newCourse = new Course(courseName, courseCode);
+    addCourse(newCourse);
   }
 
 
@@ -44,12 +29,23 @@ const AddCourse = ({ returnCourse }) => {
     <div>
         <h2>{courseName.length === 0 ? "New Course" : courseName}</h2>
         <h6>{courseCode.length === 0 ? "No code" : courseCode}</h6>
-        <hr />
-        <div style={{margin: '10pt'}}>
+        <hr/>
+        <WithMargin>
           <TextField value={courseName} onChange={(e) => setCourseName(e.target.value)} placeholder="Name"></TextField>
-        </div>
-        {/* TODO: make this text field numeric only */}
-        <TextField value={courseCode} onChange={(e) => setCourseCode(e.target.value)} placeholder="Code"></TextField>
+        </WithMargin>
+        <WithMargin>
+          <TextField value={courseCode} onChange={(e) => setCourseCode(e.target.value)} placeholder="Code"></TextField>
+        </WithMargin>
+        <WithMargin>
+          <PillButton text={editing ? "Confirm Changes" : "Add course"} backgroundColor="#378f54" textColor="white" onClick={onConfirm}/>
+        </WithMargin>
+
+
+
+
+
+
+
         <div>
             <HStack>
               <h4>Assignments</h4>
@@ -59,19 +55,23 @@ const AddCourse = ({ returnCourse }) => {
             {assignments.map((assignment, index) => (
               <div key={index} style={{margin: '10pt'}}>
                 <HStack>
-                    <TextField value={assignment.name} onChange={(e) => updateAssignment(index, 'name', e.target.value)} placeholder="Assignment"></TextField>
-                    <TextField value={assignment.weight} onChange={(e) => updateAssignment(index, 'weight', e.target.value)} placeholder="Assignment"></TextField>
+                    {/* <TextField value={assignment.name} onChange={(e) => updateAssignment(index, 'name', e.target.value)} placeholder="Assignment"></TextField>
+                    <TextField value={assignment.weight} onChange={(e) => updateAssignment(index, 'weight', e.target.value)} placeholder="Assignment"></TextField> */}
                     <CircularButton src={trashSign} color="#ff5136" size="40px" onClick={() => {}}/>
                 </HStack>
               </div>
             ))}
-            <PillButton text="Done" backgroundColor="#378f54" textColor="white" onClick={handleCourse}/>
         </div>
     </div>
   );
 };
 
-export default AddCourse;
+
+const WithMargin = styled.div`
+  margin: 10pt;
+`;
+
+export default EditCourse;
 
 
 // onChange={(e) => updateAssignment(index, 'weight', e.target.value)}

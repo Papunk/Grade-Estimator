@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 
-const Modal = ({ onClose, children }) => {
+const ExpandableModal = ({ onClose, children }) => {
   return (
     <div
       style={{
@@ -13,7 +13,7 @@ const Modal = ({ onClose, children }) => {
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
       }}
       onClick={onClose}
     >
@@ -33,25 +33,6 @@ const Modal = ({ onClose, children }) => {
         {children}
       </div>
     </div>
-  );
-};
-
-const ExpandableModal = ({trigger, children }) => {
-  const [showModal, setShowModal] = useState(false);
-
-  const handleOpenModal = () => {
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
-
-  return (
-    <>
-      <div onClick={handleOpenModal}>{trigger}</div>
-      {showModal && <Modal onClose={handleCloseModal}>{children}</Modal>}
-    </>
   );
 };
 

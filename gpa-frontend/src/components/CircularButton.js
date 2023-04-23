@@ -1,25 +1,19 @@
 import React from 'react';
+import styled from 'styled-components';
 
-const CircularButton = ({ src, color, size, onClick }) => {
-  const buttonStyle = {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: color,
-    borderRadius: '50%',
-    width: size,
-    height: size,
-    padding: '10px',
-    cursor: 'pointer',
-    border: 'none',
-    outline: 'none',
-  };
 
-  return (
-    <button style={buttonStyle} onClick={onClick}>
-      <img src={src} alt="button" style={{ width: '100%', height: '100%' }} />
-    </button>
-  );
-};
+const CircularButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => props.color};
+  border-radius: 50%;
+  width: size;
+  height: size;
+  padding: 10px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+`;
 
 export default CircularButton;
