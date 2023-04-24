@@ -7,9 +7,6 @@ import styled from 'styled-components';
 
 import chevronRight from './icons/chevron-right.png'
 import calendar from './icons/calendar.png'
-import pencil from './icons/pencil.png'
-
-import Course from './classes/Course';
 
 import Title from './components/Title'
 import Subtitle from './components/Subtitle'
@@ -37,7 +34,12 @@ function GradeTracker() {
     setAddingCourse(false);
     const updatedCourseList = [];
     for (const elem of courses) {
-      if (elem.id === updatedCourse.id) {
+      // Delete course
+      if (elem.id === updatedCourse) {
+        continue
+      }
+      // Update course
+      else if (elem.id === updatedCourse.id) {
         updatedCourseList.push(updatedCourse);
       }
       else {
@@ -57,11 +59,6 @@ function GradeTracker() {
     setAddingCourse(false);
   }
 
-  
-  const handleSelection = (event) => {
-    setCurrentSemester(event.target.value);
-  }
-
 
 
   return (
@@ -73,10 +70,10 @@ function GradeTracker() {
           <Subtitle>{currentSemester}</Subtitle>
           <HStack>
             <CircularButton color="#db7f01" onClick={null}>
-              <img src={calendar} width="20" height="20"/>
+              <img alt="switch semester" src={calendar} width="20" height="20"/>
             </CircularButton>
             <CircularButton color="#4ea0d9" onClick={() => setAddingCourse(true)}>
-              <img src={plusSign} width="20" height="20"/>
+              <img alt="add course" src={plusSign} width="20" height="20"/>
             </CircularButton>
           </HStack>
         </HStack>
@@ -89,7 +86,7 @@ function GradeTracker() {
                   <ClassSubtitle>{course.code}</ClassSubtitle>
                 </div>
                 <CircularButton color="#283247" onClick={() => editCourse(course)}>
-                  <img src={chevronRight} width="20" height="20"/>
+                  <img alt="edit course" src={chevronRight} width="20" height="20"/>
                 </CircularButton>
               </HStack>
             </ClassRow>
@@ -101,7 +98,7 @@ function GradeTracker() {
       {
         addingCourse ?
         <ExpandableModal onClose={stopEditing}>
-          <EditCourse course={currentCourse} addCourse={currentCourse ? handleEditCourse : handleAddCourse}></EditCourse>
+          <EditCourse course={currentCourse} modifyCourses={currentCourse ? handleEditCourse : handleAddCourse}></EditCourse>
         </ExpandableModal> : null
       }
 

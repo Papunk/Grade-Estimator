@@ -7,10 +7,7 @@
 class Assessment {
     constructor(name, weight) {
         this.name = name;
-        if (weight < 0 || weight > 1) {
-            throw new Error('weight must be in the range (0, 1]');
-        }
-        this.weight = weight;
+        this.weight = parseFloat(weight);
     }
 }
 

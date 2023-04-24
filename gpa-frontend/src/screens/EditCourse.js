@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import HStack from '../components/HStack';
-import TextField from '../components/TextField';
 import PillButton from '../components/PillButton';
 import CircularButton from '../components/CircularButton';
 import styled from 'styled-components';
@@ -14,8 +13,7 @@ import Title from '../components/Title';
 import Subtitle from '../components/Subtitle';
 
 
-const EditCourse = ({ course, addCourse }) => {
-  const editing = course != null;
+const EditCourse = ({ course, modifyCourses }) => {
   const [courseName, setCourseName] = useState(course ? course.name : "");
   const [courseCode, setCourseCode] = useState(course ? course.code : "");
   const [assessments, setAssessments] = useState(course ? course.assessments : []);
@@ -33,7 +31,7 @@ const EditCourse = ({ course, addCourse }) => {
         assessment.name = name;
       }
       if (weight !== null) {
-        assessment.weight = weight;
+        assessment.weight = parseFloat(weight);
       }
       return newAssessments;
     });
@@ -41,12 +39,21 @@ const EditCourse = ({ course, addCourse }) => {
 
   function onConfirm() {
     if (courseName.length > 0) {
-      const newCourse = new Course(courseName, courseCode, course ? course.id : null);
+      var newCourse = new Course(courseName, courseCode, course ? course.id : null);
       for (const elem of assessments) {
         newCourse.addAssessment(elem);
       }
-      addCourse(newCourse);
+      modifyCourses(newCourse);
     }
+  }
+
+  function deleteCourse() {
+    modifyCourses(course.id);
+  }
+
+  function deleteAssessment(index) {
+    const newAssessments = assessments.filter((_, i) => i !== index)
+    setAssessments(newAssessments);
   }
 
 
@@ -67,7 +74,7 @@ const EditCourse = ({ course, addCourse }) => {
             <HStack>
               <Subtitle>Assessments</Subtitle>
               <CircularButton color="#4ea0d9" onClick={() => addEmptyAssignment()}>
-                <img src={addList} width="20" height="20"/>
+                <img alt="add assessment" src={addList} width="20" height="20"/>
               </CircularButton>
             </HStack>
             <hr/>
@@ -75,10 +82,10 @@ const EditCourse = ({ course, addCourse }) => {
               <div key={index} style={{margin: '10pt'}}>
                   <AssignmentRowText>
                     <HStack>
-                      <CustomTextField type="text" value={assessment.name} onChange={(e) => modifyAssessmentAtIndex(index, e.target.value, null)} placeholder="Assignment"/>
-                      <CustomTextField type="number" value={assessment.weight} onChange={(e) => modifyAssessmentAtIndex(index, null, e.target.value)} placeholder="Assignment"/>
-                      <CircularButton color="#ff5136" onClick={null}>
-                        <img src={trashSign} width="20" height="20"/>
+                      <CustomTextField type="text" value={assessment.name} onChange={(e) => modifyAssessmentAtIndex(index, e.target.value, null)} placeholder="Assignment Name"/>
+                      <CustomTextField type="number" min="0" max="100" step="5" value={assessment.weight} onChange={(e) => modifyAssessmentAtIndex(index, null, e.target.value)} placeholder="Weight"/>
+                      <CircularButton color="#ff5136" onClick={() => deleteAssessment(index)}>
+                        <img alt="delete assessment" src={trashSign} width="20" height="20"/>
                       </CircularButton>
                     </HStack>
                   </AssignmentRowText>
@@ -86,9 +93,22 @@ const EditCourse = ({ course, addCourse }) => {
             ))}
         </div>
 
-        <WithMargin>
-          <PillButton text={editing ? "Confirm Changes" : "Add course"} backgroundColor="#378f54" textColor="white" onClick={onConfirm}/>
-        </WithMargin>
+        {
+          course === null ?
+          <WithMargin>
+            <PillButton text={"Confirm Changes"} backgroundColor="#378f54" textColor="white" onClick={onConfirm}/>
+          </WithMargin>
+          :
+          <HStack>
+            <WithMargin>
+              <PillButton text={"Delete Course"} backgroundColor="#ff5136" textColor="white" onClick={deleteCourse}/>
+            </WithMargin>
+            <WithMargin>
+              <PillButton text={"Confirm Changes"} backgroundColor="#378f54" textColor="white" onClick={onConfirm}/>
+            </WithMargin>
+          </HStack>
+
+        }
 
 
     </div>
@@ -102,6 +122,7 @@ const CustomTextField = styled.input`
   background: none;
   padding: 0;
   margin: 0;
+  width: 100%;
   outline: none;
   font-size: inherit;
   font-weight: inherit;

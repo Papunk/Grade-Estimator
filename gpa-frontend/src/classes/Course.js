@@ -17,13 +17,12 @@ class Course {
     }
 
     addAssessment(newAssessment) {
-        if (this.totalWeight + newAssessment.weight <= 1) {
-            this.assessments.push(newAssessment)
-            this.totalWeight += newAssessment.weight
-            console.log(this.assessments)
-        }
-        else {
-            throw new Error('');
+        if (newAssessment.name && newAssessment.weight) {
+            const sum = this.totalWeight + newAssessment.weight;
+            if (sum <= 100) {
+                this.assessments.push(newAssessment);
+                this.totalWeight += newAssessment.weight;
+            }
         }
     }
 }
