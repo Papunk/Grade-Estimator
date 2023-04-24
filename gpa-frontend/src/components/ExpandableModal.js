@@ -19,13 +19,11 @@ const ExpandableModal = ({ onClose, children }) => {
     >
       <div
         style={{
-          width: '80%',
-          maxWidth: '600px',
           backgroundColor: '#33405b',
           padding: '24px',
           borderRadius: '8px',
           boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
-          position: 'relative'
+          position: 'relative',
         }}
         onClick={(e) => e.stopPropagation()}
       >

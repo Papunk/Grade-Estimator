@@ -1,3 +1,5 @@
+import { v4 as uuid } from 'uuid';
+
 /**
  * Class representing a course
  * Attributes
@@ -6,7 +8,8 @@
  *  - assessments: the list of assessments for the semester
  */
 class Course {
-    constructor(name, code) {
+    constructor(name, code, id) {
+        this.id = id ? id : uuid();
         this.name = name;
         this.code = code;
         this.assessments = [];

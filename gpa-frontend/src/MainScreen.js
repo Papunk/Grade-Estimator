@@ -11,6 +11,9 @@ import pencil from './icons/pencil.png'
 
 import Course from './classes/Course';
 
+import Title from './components/Title'
+import Subtitle from './components/Subtitle'
+
 import plusSign from './icons/plus-white.png';
 
 
@@ -24,13 +27,41 @@ function GradeTracker() {
   const [addingCourse, setAddingCourse] = useState(false);
 
   function handleAddCourse(newCourse) {
+    setCurrentCourse(null);
     setAddingCourse(false);
     setCourses([...courses, newCourse]);
   }
+
+  function handleEditCourse(updatedCourse) {
+    setCurrentCourse(null);
+    setAddingCourse(false);
+    const updatedCourseList = [];
+    for (const elem of courses) {
+      if (elem.id === updatedCourse.id) {
+        updatedCourseList.push(updatedCourse);
+      }
+      else {
+        updatedCourseList.push(elem);
+      }
+    }
+    setCourses(updatedCourseList);
+  }
+
+  function editCourse(course) {
+    setAddingCourse(() => true);
+    setCurrentCourse(() => course);
+  }
+
+  function stopEditing() {
+    setCurrentCourse(null);
+    setAddingCourse(false);
+  }
+
   
   const handleSelection = (event) => {
     setCurrentSemester(event.target.value);
   }
+
 
 
   return (
@@ -44,9 +75,6 @@ function GradeTracker() {
             <CircularButton color="#db7f01" onClick={null}>
               <img src={calendar} width="20" height="20"/>
             </CircularButton>
-            <CircularButton color="#009193" onClick={null}>
-              <img src={pencil} width="20" height="20"/>
-            </CircularButton>
             <CircularButton color="#4ea0d9" onClick={() => setAddingCourse(true)}>
               <img src={plusSign} width="20" height="20"/>
             </CircularButton>
@@ -54,20 +82,17 @@ function GradeTracker() {
         </HStack>
         {courses.map((course, index) => (
           <div key={index}>
-            <HStack>
-              <ClassRow>
-                <HStack>
-                  <div>
-                    <ClassTitle>{courses[index].name}</ClassTitle>
-                    <ClassSubtitle>{courses[index].code}</ClassSubtitle>
-                  </div>
-                  {/* TODO: add color to button */}
-                  <CircularButton color="#283247">
-                    <img src={chevronRight} width="20" height="20"/>
-                  </CircularButton>
-                </HStack>
-              </ClassRow>
-            </HStack>
+            <ClassRow>
+              <HStack>
+                <div>
+                  <ClassTitle>{course.name}</ClassTitle>
+                  <ClassSubtitle>{course.code}</ClassSubtitle>
+                </div>
+                <CircularButton color="#283247" onClick={() => editCourse(course)}>
+                  <img src={chevronRight} width="20" height="20"/>
+                </CircularButton>
+              </HStack>
+            </ClassRow>
           </div>
         ))}
 
@@ -75,8 +100,8 @@ function GradeTracker() {
 
       {
         addingCourse ?
-        <ExpandableModal onClose={() => setAddingCourse(false)}>
-          <EditCourse course={currentCourse} addCourse={handleAddCourse}></EditCourse>
+        <ExpandableModal onClose={stopEditing}>
+          <EditCourse course={currentCourse} addCourse={currentCourse ? handleEditCourse : handleAddCourse}></EditCourse>
         </ExpandableModal> : null
       }
 
@@ -84,18 +109,6 @@ function GradeTracker() {
   );
 }
 
-
-const Title = styled.div`
-  font-size: 30pt;
-  font-weight: bold;
-  margin: 10pt 0pt 10pt 0pt;
-`;
-
-const Subtitle = styled.div`
-  font-size: 20pt;
-  font-weight: bold;
-  margin: 10pt 0pt 10pt 0pt;
-`;
 
 const Container = styled.div`
   width: 40%;
@@ -106,6 +119,7 @@ const Container = styled.div`
   border-bottom-left-radius: 20pt;
   border-bottom-right-radius: 20pt;
   background-color: #303440;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 `;
 
 const ClassRow = styled.div`
@@ -113,7 +127,6 @@ const ClassRow = styled.div`
   padding: 7pt;
   margin: 5pt;
   border-radius: 5pt;
-  width: 100%;
   text-align: left;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 `;
