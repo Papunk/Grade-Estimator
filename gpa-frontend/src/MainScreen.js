@@ -6,34 +6,48 @@ import HStack from './components/HStack';
 import styled from 'styled-components';
 
 import chevronRight from './icons/chevron-right.png'
-import calendar from './icons/calendar.png'
-
+import Semester from './classes/Semester'
+import EditableTextField from './components/EditableTextfield';
+import PillButton from './components/PillButton';
 import Title from './components/Title'
 import Subtitle from './components/Subtitle'
 
 import plusSign from './icons/plus-white.png';
 
 
-function GradeTracker() {
-  const [currentSemester, setCurrentSemester] = useState("Spring 2023");
+// TODO: Semester approach:
+// - always have an empty semester at th end
+// - have it be displayed as "add semester"
 
-  const [courses, setCourses] = useState([]);
-  const [semesters, setSemesters] = useState([]);
+function GradeTracker() {
+  const [semesters, setSemesters] = useState([new Semester("", [])]);
+  const [currentSemester, setCurrentSemester] = useState(semesters[0]);
 
   const [currentCourse, setCurrentCourse] = useState(null);
   const [addingCourse, setAddingCourse] = useState(false);
-
+  
   function handleAddCourse(newCourse) {
     setCurrentCourse(null);
     setAddingCourse(false);
-    setCourses([...courses, newCourse]);
+    const updatedCourseList = [...currentSemester.courses, newCourse]
+    editSemester(new Semester(currentSemester.name, updatedCourseList, currentSemester.id));
+    // setCurrentSemester(new Semester(currentSemester.name, updatedCourseList, currentSemester.id));
+  }
+
+  function handleAddButtonPress() {
+    if (currentSemester.name === "") {
+      alert("Please enter a name for the semester");
+    }
+    else {
+      setAddingCourse(true);
+    }
   }
 
   function handleEditCourse(updatedCourse) {
     setCurrentCourse(null);
     setAddingCourse(false);
     const updatedCourseList = [];
-    for (const elem of courses) {
+    for (const elem of currentSemester.courses) {
       // Delete course
       if (elem.id === updatedCourse) {
         continue
@@ -46,7 +60,7 @@ function GradeTracker() {
         updatedCourseList.push(elem);
       }
     }
-    setCourses(updatedCourseList);
+    editSemester(new Semester(currentSemester.name, updatedCourseList, currentSemester.id));
   }
 
   function editCourse(course) {
@@ -59,6 +73,68 @@ function GradeTracker() {
     setAddingCourse(false);
   }
 
+  function editSemester(newSemester) {
+    const newSemesterList = [];
+    for (const sem of semesters) {
+      if (sem.id === newSemester.id) {
+        newSemesterList.push(newSemester);
+      }
+      else {
+        newSemesterList.push(sem);
+      }
+    }
+    setSemesters(newSemesterList);
+    setCurrentSemester(newSemester);
+  }
+
+  function setCurrentSemesterName(name) {
+    const newSem = new Semester(name, currentSemester.courses, currentSemester.id)
+    editSemester(newSem);
+  }
+
+  function addEmptySemester() {
+    if (currentSemester.name === "") {
+      alert("Please enter a name for the semester");
+    }
+    else {
+      const newSem = new Semester("", []);
+      setCurrentSemester(newSem);
+      const semestersCopy = semesters;
+      semestersCopy.push(newSem);
+      setSemesters(semestersCopy);
+    }
+  }
+
+  function selectSemester(semID) {
+    for (const sem of semesters) {
+      if (sem.id === semID) {
+        setCurrentSemester(sem);
+        return
+      }
+    } 
+  }
+
+  function deleteSemester(semID) {
+    if (!window.confirm("Delete this semester?")) {
+      return;
+    }
+    const newSemesterList = [];
+    for (const sem of semesters) {
+      if (sem.id === semID) {
+        continue;
+      }
+      newSemesterList.push(sem);
+    }
+    if (newSemesterList.length === 0) {
+      const emptySem = new Semester("", []);
+      setSemesters([emptySem]);
+      setCurrentSemester(emptySem);
+    }
+    else {
+      setSemesters(newSemesterList);
+      setCurrentSemester(newSemesterList[newSemesterList.length-1]);
+    }
+  }
 
 
   return (
@@ -67,17 +143,25 @@ function GradeTracker() {
       <hr/>
       <div>
         <HStack>
-          <Subtitle>{currentSemester}</Subtitle>
+          <Subtitle style={{textAlign: "left"}}>
+            <EditableTextField type="text" value={currentSemester.name} onChange={(e) => setCurrentSemesterName(e.target.value)} placeholder="New semester"/>
+          </Subtitle>
           <HStack>
-            <CircularButton color="#db7f01" onClick={null}>
-              <img alt="switch semester" src={calendar} width="20" height="20"/>
-            </CircularButton>
-            <CircularButton color="#4ea0d9" onClick={() => setAddingCourse(true)}>
+          <select value={currentSemester.id} onChange={(e) => selectSemester(e.target.value)}>
+            {semesters.map((semester) => (
+              <option key={semester.id} value={semester.id}>
+                {
+                  semester.name ? semester.name : "--"
+                }
+              </option>
+            ))}
+          </select>
+            <CircularButton color="#4ea0d9" onClick={handleAddButtonPress}>
               <img alt="add course" src={plusSign} width="20" height="20"/>
             </CircularButton>
           </HStack>
         </HStack>
-        {courses.map((course, index) => (
+        {currentSemester.courses.map((course, index) => (
           <div key={index}>
             <ClassRow>
               <HStack>
@@ -93,7 +177,21 @@ function GradeTracker() {
           </div>
         ))}
 
+        <HStack>
+          <Subtitle>Semester Metrics</Subtitle>
+        </HStack>
+        <hr/>
+
+        Add courses...
+
+        <BigMargin>
+          <HStack>
+            <PillButton text={"Delete Semester"} backgroundColor="#ff6b60" textColor="white" onClick={() => deleteSemester(currentSemester.id)}/>
+            <PillButton text={"New Semester"} backgroundColor="#4ea0d9" textColor="white" onClick={addEmptySemester}/>
+          </HStack>
+        </BigMargin>
       </div>
+      
 
       {
         addingCourse ?
@@ -105,6 +203,10 @@ function GradeTracker() {
     </Container>
   );
 }
+
+const BigMargin = styled.div`
+margin-top: 20pt;
+`;
 
 
 const Container = styled.div`
@@ -139,3 +241,4 @@ const ClassSubtitle = styled.div`
 
 
 export default GradeTracker;
+
