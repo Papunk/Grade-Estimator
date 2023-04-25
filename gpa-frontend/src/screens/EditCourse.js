@@ -85,7 +85,7 @@ const EditCourse = ({ course, modifyCourses }) => {
               <div key={index} style={{margin: '10pt'}}>
                   <AssignmentRowText>
                     <HStack>
-                      <EditableTextField type="text" value={assessment.name} onChange={(e) => modifyAssessmentAtIndex(index, e.target.value, null, null)} placeholder="Assignment Name"/>
+                      <EditableTextField type="text" value={assessment.name} onChange={(e) => modifyAssessmentAtIndex(index, e.target.value, null, null)} placeholder="Name"/>
                       <EditableTextField type="number" min="0" max="100" step="5" value={assessment.grade} onChange={(e) => modifyAssessmentAtIndex(index, null, e.target.value, null)} placeholder="Obtained"/>
                       <EditableTextField type="number" min="0" max="100" step="5" value={assessment.weight} onChange={(e) => modifyAssessmentAtIndex(index, null, null, e.target.value)} placeholder="Value"/>
                       <CircularButton color="#ff6b60" onClick={() => deleteAssessment(index)}>

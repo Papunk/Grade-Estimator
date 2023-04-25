@@ -143,9 +143,11 @@ function GradeTracker() {
       <hr/>
       <div>
         <HStack>
-          <Subtitle style={{textAlign: "left"}}>
-            <EditableTextField type="text" value={currentSemester.name} onChange={(e) => setCurrentSemesterName(e.target.value)} placeholder="New semester"/>
-          </Subtitle>
+          <div>
+            <Subtitle style={{textAlign: "left"}}>
+              <EditableTextField type="text" value={currentSemester.name} onChange={(e) => setCurrentSemesterName(e.target.value)} placeholder="New semester"/>
+            </Subtitle>
+          </div>
           <HStack>
           <select value={currentSemester.id} onChange={(e) => selectSemester(e.target.value)}>
             {semesters.map((semester) => (
@@ -169,20 +171,28 @@ function GradeTracker() {
                   <ClassTitle>{course.name}</ClassTitle>
                   <ClassSubtitle>{course.code}</ClassSubtitle>
                 </div>
-                <CircularButton color="#283247" onClick={() => editCourse(course)}>
-                  <img alt="edit course" src={chevronRight} width="20" height="20"/>
-                </CircularButton>
+                <HStack>
+                  <ClassSubtitle>{course.assessments.reduce((accumulator, currentValue) => parseFloat(accumulator ? accumulator : 0) + parseFloat(currentValue.grade ? currentValue.grade : 0), 0)}%</ClassSubtitle>
+                  <CircularButton color="#283247" onClick={() => editCourse(course)}>
+                    <img alt="edit course" src={chevronRight} width="20" height="20"/>
+                  </CircularButton>
+                </HStack>
               </HStack>
             </ClassRow>
           </div>
         ))}
 
-        <HStack>
-          <Subtitle>Semester Metrics</Subtitle>
-        </HStack>
-        <hr/>
 
-        Add courses...
+        <div>
+          <MetricsText>
+            Current Grade: {
+              currentSemester.courses.reduce((runningSum, course) => 
+                runningSum + course.assessments.reduce((accumulator, currentValue) => parseFloat(accumulator ? accumulator : 0) + parseFloat(currentValue.grade ? currentValue.grade : 0), 0)
+              , 0) / currentSemester.courses.length
+            }%
+          </MetricsText>
+        </div>
+
 
         <BigMargin>
           <HStack>
@@ -203,6 +213,14 @@ function GradeTracker() {
     </Container>
   );
 }
+
+
+const MetricsText = styled.div`
+  text-align: left;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 10pt 0pt 0pt 0pt;
+`;
 
 const BigMargin = styled.div`
 margin-top: 20pt;

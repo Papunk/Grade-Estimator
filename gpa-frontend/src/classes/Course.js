@@ -8,10 +8,11 @@ import { v4 as uuid } from 'uuid';
  *  - assessments: the list of assessments for the semester
  */
 class Course {
-    constructor(name, code, id) {
+    constructor(name, code, id, credits) {
         this.id = id ? id : uuid();
         this.name = name;
         this.code = code;
+        this.credits = credits;
         this.assessments = [];
         this.totalWeight = 0;
     }
