@@ -1,16 +1,15 @@
 import { useState } from 'react';
+import styled from 'styled-components';
+import Assessment from '../classes/Assessment';
+import Course from '../classes/Course';
+import CircularButton from '../components/CircularButton';
+import EditableTextField from '../components/EditableTextfield';
 import HStack from '../components/HStack';
 import PillButton from '../components/PillButton';
-import CircularButton from '../components/CircularButton';
-import styled from 'styled-components';
-import Course from '../classes/Course';
-import Assessment from '../classes/Assessment';
-
-import trashSign from '../icons/trash.png';
-import addList from '../icons/add-list.png';
-
-import Title from '../components/Title';
 import Subtitle from '../components/Subtitle';
+import Title from '../components/Title';
+import addList from '../icons/add-list.png';
+import trashSign from '../icons/trash.png';
 
 
 const EditCourse = ({ course, modifyCourses }) => {
@@ -23,12 +22,15 @@ const EditCourse = ({ course, modifyCourses }) => {
     setAssessments([...assessments, newAssessment])
   };
 
-  const modifyAssessmentAtIndex = (index, name, weight) => {
+  const modifyAssessmentAtIndex = (index, name, grade, weight) => {
     setAssessments(prevAssessments => {
       const newAssessments = [...prevAssessments];
       const assessment = newAssessments[index];
       if (name !== null) {
         assessment.name = name;
+      }
+      if (grade !== null) {
+        assessment.grade = parseFloat(grade);
       }
       if (weight !== null) {
         assessment.weight = parseFloat(weight);
@@ -61,15 +63,16 @@ const EditCourse = ({ course, modifyCourses }) => {
     <div>
         <WithMargin>
           <Title>
-            <CustomTextField type="text" value={courseName} onChange={(e) => setCourseName(e.target.value)} placeholder="Name"/>
+            <EditableTextField type="text" value={courseName} onChange={(e) => setCourseName(e.target.value)} placeholder="Name"/>
           </Title>
         </WithMargin>
         <WithMargin>
           <Subtitle>
-            <CustomTextField type="text" value={courseCode} onChange={(e) => setCourseCode(e.target.value)} placeholder="Code"/>
+            <EditableTextField type="text" value={courseCode} onChange={(e) => setCourseCode(e.target.value)} placeholder="Code"/>
           </Subtitle>
         </WithMargin> 
   
+
         <div>
             <HStack>
               <Subtitle>Assessments</Subtitle>
@@ -82,32 +85,56 @@ const EditCourse = ({ course, modifyCourses }) => {
               <div key={index} style={{margin: '10pt'}}>
                   <AssignmentRowText>
                     <HStack>
-                      <CustomTextField type="text" value={assessment.name} onChange={(e) => modifyAssessmentAtIndex(index, e.target.value, null)} placeholder="Assignment Name"/>
-                      <CustomTextField type="number" min="0" max="100" step="5" value={assessment.weight} onChange={(e) => modifyAssessmentAtIndex(index, null, e.target.value)} placeholder="Weight"/>
-                      <CircularButton color="#ff5136" onClick={() => deleteAssessment(index)}>
+                      <EditableTextField type="text" value={assessment.name} onChange={(e) => modifyAssessmentAtIndex(index, e.target.value, null, null)} placeholder="Assignment Name"/>
+                      <EditableTextField type="number" min="0" max="100" step="5" value={assessment.grade} onChange={(e) => modifyAssessmentAtIndex(index, null, e.target.value, null)} placeholder="Obtained"/>
+                      <EditableTextField type="number" min="0" max="100" step="5" value={assessment.weight} onChange={(e) => modifyAssessmentAtIndex(index, null, null, e.target.value)} placeholder="Value"/>
+                      <CircularButton color="#ff6b60" onClick={() => deleteAssessment(index)}>
                         <img alt="delete assessment" src={trashSign} width="20" height="20"/>
                       </CircularButton>
                     </HStack>
                   </AssignmentRowText>
               </div>
             ))}
+
+            {
+            course !== null ?
+            <div>
+              <HStack>
+                <Subtitle>Course Metrics</Subtitle>
+              </HStack>
+              <hr/>
+              <div>
+                <MetricsText>Total Percentage: {
+                  course.assessments.length > 0 ?
+                  course.assessments.reduce((accumulator, currentValue) => parseFloat(accumulator ? accumulator : 0) + parseFloat(currentValue.weight ? currentValue.weight : 0), 0)
+                  : 0
+                }%</MetricsText>
+                <MetricsText>Current Grade: {
+                  course.assessments.length > 0 ?
+                  course.assessments.reduce((accumulator, currentValue) => parseFloat(accumulator ? accumulator : 0) + parseFloat(currentValue.grade ? currentValue.grade : 0), 0)
+                  : 0
+                }%</MetricsText>
+              </div>
+            </div>
+            : null
+          }
         </div>
+
 
         {
           course === null ?
           <WithMargin>
-            <PillButton text={"Confirm Changes"} backgroundColor="#378f54" textColor="white" onClick={onConfirm}/>
+            <PillButton text={"Add Course"} backgroundColor="#378f54" textColor="white" onClick={onConfirm}/>
           </WithMargin>
           :
           <HStack>
             <WithMargin>
-              <PillButton text={"Delete Course"} backgroundColor="#ff5136" textColor="white" onClick={deleteCourse}/>
+              <PillButton text={"Delete Course"} backgroundColor="#ff6b60" textColor="white" onClick={deleteCourse}/>
             </WithMargin>
             <WithMargin>
-              <PillButton text={"Confirm Changes"} backgroundColor="#378f54" textColor="white" onClick={onConfirm}/>
+              <PillButton text={"Done"} backgroundColor="#378f54" textColor="white" onClick={onConfirm}/>
             </WithMargin>
           </HStack>
-
         }
 
 
@@ -115,20 +142,11 @@ const EditCourse = ({ course, modifyCourses }) => {
   );
 };
 
-
-
-const CustomTextField = styled.input`
-  border: none;
-  background: none;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  outline: none;
-  font-size: inherit;
-  font-weight: inherit;
-  font-family: inherit;
-  color: inherit;
-  text-align: inherit;
+const MetricsText = styled.div`
+  text-align: left;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 10pt 0pt 0pt 0pt;
 `;
 
 const AssignmentRowText = styled.div`
@@ -137,7 +155,7 @@ const AssignmentRowText = styled.div`
 
 
 const WithMargin = styled.div`
-  margin: 10pt 0pt 10pt 0pt;
+  margin: 30pt 0pt 10pt 0pt;
 `;
 
 export default EditCourse;
