@@ -27,7 +27,7 @@ const ExpandableModal = ({ onClose, children }) => {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div style={{fontSize: '12pt', position: 'absolute', top: '16px', left: '16px', cursor: 'pointer', color: '#ff5136'}} onClick={onClose}>Close</div>
+        <div style={{fontSize: '12pt', fontWeight: 'bold', position: 'absolute', top: '16px', left: '16px', cursor: 'pointer', color: '#ff6b60'}} onClick={onClose}>Close</div>
         {children}
       </div>
     </div>
