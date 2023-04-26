@@ -5,11 +5,23 @@
  *  - weight: the weight as a percentage such as 25 or 50
  */
 class Assessment {
-    constructor(name, grade, weight) {
+    constructor(name, score, maxScore, weight) {
         this.name = name;
-        this.grade = parseFloat(grade);
+        this.score = parseFloat(score);
+        this.maxScore = parseFloat(maxScore);
         this.weight = parseFloat(weight);
     }
+
+    grade(){
+        return ((this.score/this.maxScore) * 100).toFixed(2);
+    }
+
+    gradeWeight(){
+        return Math.round((this.weight/100) * this.grade() + 'e2') + 'e-2';
+    }
+
+
+
 }
 
 export default Assessment;

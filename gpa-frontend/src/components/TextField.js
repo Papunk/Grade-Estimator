@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TextField = ({ value, onChange, placeholder }) => {
+const TextField = ({ value, onChange, placeholder, width }) => {
   return (
     <input
       type="text"
@@ -14,6 +14,7 @@ const TextField = ({ value, onChange, placeholder }) => {
         border: '1px solid #d2d2d2',
         backgroundColor: '#f2f2f2',
         color: '#333',
+        width: width,
       }}
     />
   );

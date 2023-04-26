@@ -4,6 +4,7 @@ import Assessment from '../classes/Assessment';
 import Course from '../classes/Course';
 import CircularButton from '../components/CircularButton';
 import EditableTextField from '../components/EditableTextfield';
+import TextField from '../components/TextField';
 import HStack from '../components/HStack';
 import PillButton from '../components/PillButton';
 import Subtitle from '../components/Subtitle';
@@ -18,19 +19,22 @@ const EditCourse = ({ course, modifyCourses }) => {
   const [assessments, setAssessments] = useState(course ? course.assessments : []);
 
   function addEmptyAssignment() {
-    const newAssessment = new Assessment("", 0)
+    const newAssessment = new Assessment("")
     setAssessments([...assessments, newAssessment])
   };
 
-  const modifyAssessmentAtIndex = (index, name, grade, weight) => {
+  const modifyAssessmentAtIndex = (index, name, score, maxScore, weight) => {
     setAssessments(prevAssessments => {
       const newAssessments = [...prevAssessments];
       const assessment = newAssessments[index];
       if (name !== null) {
         assessment.name = name;
       }
-      if (grade !== null) {
-        assessment.grade = parseFloat(grade);
+      if (score !== null) {
+        assessment.score = parseFloat(score);
+      }
+      if (maxScore !== null) {
+        assessment.maxScore = parseFloat(maxScore);
       }
       if (weight !== null) {
         assessment.weight = parseFloat(weight);
@@ -86,8 +90,10 @@ const EditCourse = ({ course, modifyCourses }) => {
                   <AssignmentRowText>
                     <HStack>
                       <EditableTextField type="text" value={assessment.name} onChange={(e) => modifyAssessmentAtIndex(index, e.target.value, null, null)} placeholder="Name"/>
-                      <EditableTextField type="number" min="0" max="100" step="5" value={assessment.grade} onChange={(e) => modifyAssessmentAtIndex(index, null, e.target.value, null)} placeholder="Obtained"/>
-                      <EditableTextField type="number" min="0" max="100" step="5" value={assessment.weight} onChange={(e) => modifyAssessmentAtIndex(index, null, null, e.target.value)} placeholder="Value"/>
+                      <EditableTextField type="number" min="0" max="100" step="1" value={assessment.score} onChange={(e) => modifyAssessmentAtIndex(index, null, e.target.value, null)} placeholder="Obtained"/>
+                      <EditableTextField type="number" min="0" max="100" step="1" value={assessment.maxScore} onChange={(e) => modifyAssessmentAtIndex(index, null, null, e.target.value, null)} placeholder="Value"/>
+                      <EditableTextField type="number" min="0" max="100" step="1" value={assessment.weight} onChange={(e) => modifyAssessmentAtIndex(index, null, null, null, e.target.value)} placeholder="Weight"/>
+                      <TextField value={Number(assessment.grade()) ? assessment.grade() + '%' : 0} placeholder="Grade" width={'5em'}></TextField>
                       <CircularButton color="#ff6b60" onClick={() => deleteAssessment(index)}>
                         <img alt="delete assessment" src={trashSign} width="20" height="20"/>
                       </CircularButton>
@@ -106,12 +112,12 @@ const EditCourse = ({ course, modifyCourses }) => {
               <div>
                 <MetricsText>Total Percentage: {
                   course.assessments.length > 0 ?
-                  course.assessments.reduce((accumulator, currentValue) => parseFloat(accumulator ? accumulator : 0) + parseFloat(currentValue.weight ? currentValue.weight : 0), 0)
+                  course.assessments.reduce((accumulator, currentValue) => parseFloat(accumulator % 1 !== 0 ? accumulator : 0) + parseFloat(currentValue.weight ? currentValue.weight : 0), 0)
                   : 0
                 }%</MetricsText>
                 <MetricsText>Current Grade: {
                   course.assessments.length > 0 ?
-                  course.assessments.reduce((accumulator, currentValue) => parseFloat(accumulator ? accumulator : 0) + parseFloat(currentValue.grade ? currentValue.grade : 0), 0)
+                  course.assessments.reduce((accumulator, currentValue) => parseFloat(accumulator % 1 !== 0 ? accumulator : 0) + parseFloat(currentValue.gradeWeight() ? currentValue.gradeWeight() : 0), 0)
                   : 0
                 }%</MetricsText>
               </div>

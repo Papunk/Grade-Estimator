@@ -172,7 +172,7 @@ function GradeTracker() {
                   <ClassSubtitle>{course.code}</ClassSubtitle>
                 </div>
                 <HStack>
-                  <ClassSubtitle>{course.assessments.reduce((accumulator, currentValue) => parseFloat(accumulator ? accumulator : 0) + parseFloat(currentValue.grade ? currentValue.grade : 0), 0)}%</ClassSubtitle>
+                  <ClassSubtitle>{course.assessments.reduce((accumulator, currentValue) => parseFloat(isNaN(accumulator) ? 0 : accumulator) + parseFloat(isNaN(currentValue.gradeWeight()) ? 0: currentValue.gradeWeight()), 0)}%</ClassSubtitle>
                   <CircularButton color="#283247" onClick={() => editCourse(course)}>
                     <img alt="edit course" src={chevronRight} width="20" height="20"/>
                   </CircularButton>
@@ -187,7 +187,7 @@ function GradeTracker() {
           <MetricsText>
             Current Grade: {
               currentSemester.courses.reduce((runningSum, course) => 
-                runningSum + course.assessments.reduce((accumulator, currentValue) => parseFloat(accumulator ? accumulator : 0) + parseFloat(currentValue.grade ? currentValue.grade : 0), 0)
+                runningSum + course.assessments.reduce((accumulator, currentValue) => parseFloat(accumulator ? accumulator : 0) + parseFloat(currentValue.gradeWeight() ? currentValue.gradeWeight() : 0), 0)
               , 0) / currentSemester.courses.length
             }%
           </MetricsText>
