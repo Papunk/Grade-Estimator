@@ -112,12 +112,12 @@ const EditCourse = ({ course, modifyCourses }) => {
               <div>
                 <MetricsText>Total Percentage: {
                   course.assessments.length > 0 ?
-                  course.assessments.reduce((accumulator, currentValue) => parseFloat(accumulator % 1 !== 0 ? accumulator : 0) + parseFloat(currentValue.weight ? currentValue.weight : 0), 0)
+                  course.assessments.reduce((accumulator, currentValue) => parseFloat(accumulator ? accumulator : 0) + parseFloat(currentValue.weight ? currentValue.weight : 0), 0)
                   : 0
                 }%</MetricsText>
                 <MetricsText>Current Grade: {
                   course.assessments.length > 0 ?
-                  course.assessments.reduce((accumulator, currentValue) => parseFloat(accumulator % 1 !== 0 ? accumulator : 0) + parseFloat(currentValue.gradeWeight() ? currentValue.gradeWeight() : 0), 0)
+                  course.assessments.reduce((accumulator, currentValue) => parseFloat(accumulator ? accumulator : 0) + parseFloat(currentValue.gradeWeight() ? currentValue.gradeWeight() : 0), 0)
                   : 0
                 }%</MetricsText>
               </div>
