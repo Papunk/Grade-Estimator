@@ -15,6 +15,7 @@ class Course {
         this.credits = credits;
         this.assessments = [];
         this.totalWeight = 0;
+        this.grade = 100;
     }
 
     addAssessment(newAssessment) {
@@ -26,6 +27,16 @@ class Course {
             }
         }
     }
+
+    maxGrade() {
+        if (this.assessments.length > 0) {
+            this.grade = 100;
+            for (var x of this.assessments) {
+                this.grade -= x.percentageLoss();
+            }
+        }
+        return this.grade.toFixed(2);
+      }
 }
 
 export default Course;

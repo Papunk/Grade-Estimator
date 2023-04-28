@@ -136,6 +136,27 @@ function GradeTracker() {
     }
   }
 
+  function currentGPA() {
+    var totalCredits = 0;
+    var honorPoints = 0;
+    if (currentSemester.courses.length > 0) {
+      for (let i = 0; i < currentSemester.courses.length; i++) {
+        totalCredits += parseInt(currentSemester.courses[i].credits);
+        if (currentSemester.courses[i].maxGrade() >= 90) {
+          honorPoints += 4*currentSemester.courses[i].credits;
+        }else if (currentSemester.courses[i].maxGrade() >= 80) {
+          honorPoints += 3*currentSemester.courses[i].credits;
+        }else if (currentSemester.courses[i].maxGrade() >= 70) {
+          honorPoints += 2*currentSemester.courses[i].credits;
+        }else if (currentSemester.courses[i].maxGrade() >= 60) {
+          honorPoints += 1*currentSemester.courses[i].credits;
+        }else if (currentSemester.courses[i].maxGrade() < 60) {
+          honorPoints += 0*currentSemester.courses[i].credits;
+        }
+      }
+    }
+    return (honorPoints/totalCredits).toFixed(2);
+  }
 
   return (
     <Container>
@@ -172,7 +193,7 @@ function GradeTracker() {
                   <ClassSubtitle>{course.code}</ClassSubtitle>
                 </div>
                 <HStack>
-                  <ClassSubtitle>{course.assessments.reduce((accumulator, currentValue) => parseFloat(isNaN(accumulator) ? 0 : accumulator) + parseFloat(isNaN(currentValue.gradeWeight()) ? 0: currentValue.gradeWeight()), 0)}%</ClassSubtitle>
+                  <ClassSubtitle>{course.maxGrade()}%</ClassSubtitle>
                   <CircularButton color="#283247" onClick={() => editCourse(course)}>
                     <img alt="edit course" src={chevronRight} width="20" height="20"/>
                   </CircularButton>
@@ -185,11 +206,7 @@ function GradeTracker() {
 
         <div>
           <MetricsText>
-            Current Grade: {
-              currentSemester.courses.reduce((runningSum, course) => 
-                runningSum + course.assessments.reduce((accumulator, currentValue) => parseFloat(accumulator ? accumulator : 0) + parseFloat(currentValue.gradeWeight() ? currentValue.gradeWeight() : 0), 0)
-              , 0) / currentSemester.courses.length
-            }%
+            Current GPA: {currentGPA()}
           </MetricsText>
         </div>
 

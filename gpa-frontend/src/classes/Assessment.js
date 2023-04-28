@@ -20,6 +20,10 @@ class Assessment {
         return Math.round((this.weight/100) * this.grade() + 'e2') + 'e-2';
     }
 
+    percentageLoss(){
+        return (this.weight - this.gradeWeight()).toFixed(2);
+    }
+
 
 
 }
