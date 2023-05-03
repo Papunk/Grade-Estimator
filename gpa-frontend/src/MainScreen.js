@@ -154,8 +154,34 @@ function GradeTracker() {
           honorPoints += 0*currentSemester.courses[i].credits;
         }
       }
+      return (honorPoints/totalCredits).toFixed(2);
     }
-    return (honorPoints/totalCredits).toFixed(2);
+    return 0;
+  }
+
+  function overallGPA() {
+    var totalCredits = 0;
+    var honorPoints = 0;
+    for (var i = 0, j = 0; j < semesters.length; i++) {
+      if (semesters[j].courses.length > 0 && i < semesters[j].courses.length) {
+        totalCredits += parseInt(semesters[j].courses[i].credits);
+        if (semesters[j].courses[i].maxGrade() >= 90) {
+          honorPoints += 4*semesters[j].courses[i].credits;
+        }else if (semesters[j].courses[i].maxGrade() >= 80) {
+          honorPoints += 3*semesters[j].courses[i].credits;
+        }else if (semesters[j].courses[i].maxGrade() >= 70) {
+          honorPoints += 2*semesters[j].courses[i].credits;
+        }else if (semesters[j].courses[i].maxGrade() >= 60) {
+          honorPoints += 1*semesters[j].courses[i].credits;
+        }else if (semesters[j].courses[i].maxGrade() < 60) {
+          honorPoints += 0*semesters[j].courses[i].credits;
+        }
+      }else{
+        i = -1;
+        j++;
+      }
+    }
+    return Number((honorPoints/totalCredits).toFixed(2)) ? (honorPoints/totalCredits).toFixed(2) : 0;
   }
 
   return (
@@ -207,6 +233,9 @@ function GradeTracker() {
         <div>
           <MetricsText>
             Current GPA: {currentGPA()}
+          </MetricsText>
+          <MetricsText>
+            Overall GPA: {overallGPA()}
           </MetricsText>
         </div>
 
